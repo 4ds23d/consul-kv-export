@@ -6,11 +6,6 @@ import feign.Param;
 import java.util.List;
 
 public interface ConsulClient {
-
-    @RequestLine("GET /v1/kv/{path}?recurse=true")
+    @RequestLine("GET /v1/kv/{path}?recurse")
     List<KVValue> findRecursive(@Param("path") String path);
-
-    @RequestLine("GET /v1/kv/{path}?keys=true")
-    List<Key> findKeys(@Param("path") String path);
-
 }

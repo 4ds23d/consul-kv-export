@@ -16,8 +16,8 @@ public class ConsulApiConfiguration {
 
         return Feign.builder()
                 .client(new OkHttpClient())
-                .encoder(new GsonEncoder(gson))
-                .decoder(new GsonDecoder())
+                .encoder(new GsonEncoder())
+                .decoder(new GsonDecoder(gson))
                 .logger(new Slf4jLogger(ConsulClient.class))
                 .logLevel(Logger.Level.FULL)
                 .target(ConsulClient.class, url);

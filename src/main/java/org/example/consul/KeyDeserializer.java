@@ -18,7 +18,6 @@ class KeyDeserializer implements JsonDeserializer<Key> {
             if (primitive.isString()) {
                 return new Key(primitive.getAsString());
             }
-
         }
 
         throw new JsonParseException("Cannot Deserialize %s to %s".formatted(json.toString(), Key.class.getSimpleName()));
