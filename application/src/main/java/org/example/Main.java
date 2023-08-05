@@ -1,7 +1,6 @@
 package org.example;
 
 import org.example.consul.ConsulApiConfiguration;
-import org.example.consul.ConsulClient;
 import org.example.consul.FilePersister;
 
 import java.io.IOException;

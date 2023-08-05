@@ -1,7 +1,7 @@
 package org.example.consul;
 
-import feign.RequestLine;
 import feign.Param;
+import feign.RequestLine;
 
 import java.util.List;
 

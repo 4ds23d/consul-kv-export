@@ -1,5 +1,8 @@
 package org.example.consul;
 
+import org.example.consul.KVValue;
+import org.example.consul.KVValueFile;
+import org.example.consul.Key;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

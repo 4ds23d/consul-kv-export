@@ -2,74 +2,43 @@ package org.example.consul;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import org.example.consul.ConsulApiConfiguration;
+import org.example.consul.ConsulClient;
+import org.example.consul.FilePersister;
+import org.example.consul.KVValue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest
-class KeyDownloaderTest {
+class FilePersisterTest {
 
     @Test
-    void test_something_with_wiremock(WireMockRuntimeInfo wmRuntimeInfo) {
+    void createFilesAndDirectories(@TempDir Path tempDir, WireMockRuntimeInfo wmRuntimeInfo) throws IOException {
         // given
-        aStubConsul();
-
-        // and client
-        var client = aClient(wmRuntimeInfo);
+        var list = kvValueList(wmRuntimeInfo);
+        var persister = new FilePersister(tempDir, list);
 
         // when
-        var keys = client.findRecursive("dev/project-a");
+        persister.persist();
 
         // then
-        assertThat(keys)
-                .contains(new KVValue(26, 26, 0, 0, new Key("dev/project-a/"), null))
-                .contains(new KVValue(36, 36, 0, 0, new Key("dev/project-a/azure/values.yml"), "dmFsdWVz"));
+        assertThat(Path.of(tempDir.toString(), "dev", "project-a")).exists().isDirectory();
+        assertThat(Path.of(tempDir.toString(), "dev", "project-a", "database.key")).exists().hasContent("jdbc:oracle");
     }
 
-    @Test
-    void verifyValue(WireMockRuntimeInfo wmRuntimeInfo) {
-        // given
+    private List<KVValue> kvValueList(WireMockRuntimeInfo wmRuntimeInfo) {
         aStubConsul();
-
-        // and client
         var client = aClient(wmRuntimeInfo);
-
-        // when
-        var keys = client.findRecursive("dev/project-a");
-
-        // then
-        var key = findKey(keys, "dev/project-a/azure/values.yml");
-        assertThat(key.getValueAsString()).isEqualTo("values");
-
+        return client.findRecursive("dev/project-a");
     }
-
-    @Test
-    void verifyValueUtf(WireMockRuntimeInfo wmRuntimeInfo) {
-        // given
-        aStubConsul();
-
-        // and client
-        var client = aClient(wmRuntimeInfo);
-
-        // when
-        var keys = client.findRecursive("dev/project-a");
-
-        // then
-        var key = findKey(keys, "dev/project-a/spring.name");
-        assertThat(key.getValueAsString()).isEqualTo("spring-name ĄŁĘĆŻŃ");
-
-    }
-
-    private KVValue findKey(List<KVValue> keys, String name) {
-        return keys.stream()
-                .filter(it -> it.getKey().equals(new Key(name)))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Cannot find key " + name));
-    }
-
 
     private ConsulClient aClient(WireMockRuntimeInfo wmRuntimeInfo) {
         var config = new ConsulApiConfiguration();
