@@ -1,6 +1,7 @@
-package org.example.consul;
+package org.example.consul.persist;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.consul.KValue;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -10,16 +11,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 @Slf4j
-record KVValueFile(KVValue value, Path base) {
+record KValueFile(KValue value, Path base) {
 
-    public void createDirectoryOrFile() throws IOException {
+    void createDirectoryOrFile() throws IOException {
         log.info("Create {}", value.getKey());
         var key = value.getKey();
         var directory = Path.of(base.toString(), key.getDirectory().toString()).toFile();
         directory.mkdirs();
 
-        if (key.isFile()) {
-            var file = Path.of(base.toString(), key.getName()).toFile();
+        if (key.isProperty()) {
+            var file = Path.of(base.toString(), key.name()).toFile();
             try (var fos = new FileOutputStream(file);
                  var osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
                  var writer = new BufferedWriter(osw)) {

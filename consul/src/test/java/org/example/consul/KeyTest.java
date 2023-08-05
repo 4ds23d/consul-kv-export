@@ -1,5 +1,6 @@
 package org.example.consul;
 
+import org.checkerframework.checker.units.qual.K;
 import org.example.consul.Key;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,5 +47,22 @@ class KeyTest {
         var key = new Key(input);
         // when
         assertThat(key.isDirectory()).isEqualTo(expectedDirectory);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "a.aa, a/, a.aa",
+            "aa/a.aa, a/, aa/a.aa",
+            "a/abc.aa, a/, abc.aa",
+            "a/abc.aa, a, a/abc.aa",
+            "a/ddd/abc.aa, a/ddd/, abc.aa",
+    })
+    void removeBase(String input, String base, String expectedKey) {
+        // given
+        var keyBeg = new Key(input);
+        // when
+        var key = keyBeg.removePrefix(new Key(base));
+        // then
+        assertThat(key).isEqualTo(new Key(expectedKey));
     }
 }

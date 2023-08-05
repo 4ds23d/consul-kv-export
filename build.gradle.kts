@@ -1,13 +1,9 @@
-plugins {
-    id("java")
-}
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
+    group = "org.example"
+    version = "1.0-SNAPSHOT"
 }

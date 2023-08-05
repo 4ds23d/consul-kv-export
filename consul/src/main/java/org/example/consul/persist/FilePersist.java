@@ -1,15 +1,15 @@
-package org.example.consul;
+package org.example.consul.persist;
 
-import lombok.Data;
+import org.example.consul.KValue;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public record FilePersister(Path path, List<KVValue> values) {
+public record FilePersist(Path path, List<KValue> values) {
     public void persist() throws IOException {
         var kvFiles = values.stream()
-                .map(el -> new KVValueFile(el, path))
+                .map(el -> new KValueFile(el, path))
                 .toList();
 
         for (var kvFile : kvFiles) {

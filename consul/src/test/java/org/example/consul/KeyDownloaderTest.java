@@ -2,10 +2,6 @@ package org.example.consul;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import org.example.consul.ConsulApiConfiguration;
-import org.example.consul.ConsulClient;
-import org.example.consul.KVValue;
-import org.example.consul.Key;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -29,8 +25,8 @@ class KeyDownloaderTest {
 
         // then
         assertThat(keys)
-                .contains(new KVValue(26, 26, 0, 0, new Key("dev/project-a/"), null))
-                .contains(new KVValue(36, 36, 0, 0, new Key("dev/project-a/azure/values.yml"), "dmFsdWVz"));
+                .contains(new KValue(26, 26, 0, 0, new Key("dev/project-a/"), null))
+                .contains(new KValue(36, 36, 0, 0, new Key("dev/project-a/azure/values.yml"), "dmFsdWVz"));
     }
 
     @Test
@@ -67,7 +63,7 @@ class KeyDownloaderTest {
 
     }
 
-    private KVValue findKey(List<KVValue> keys, String name) {
+    private KValue findKey(List<KValue> keys, String name) {
         return keys.stream()
                 .filter(it -> it.getKey().equals(new Key(name)))
                 .findFirst()
@@ -76,7 +72,7 @@ class KeyDownloaderTest {
 
 
     private ConsulClient aClient(WireMockRuntimeInfo wmRuntimeInfo) {
-        var config = new ConsulApiConfiguration();
+        var config = new ConsulConfiguration();
         return config.build(wmRuntimeInfo.getHttpBaseUrl());
     }
 

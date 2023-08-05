@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ConsulClient {
     @RequestLine("GET /v1/kv/{path}?recurse")
-    List<KVValue> findRecursive(@Param("path") String path);
+    List<KValue> findRecursive(@Param("path") String path);
 }

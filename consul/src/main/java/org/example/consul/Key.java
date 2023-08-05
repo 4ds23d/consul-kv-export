@@ -1,14 +1,16 @@
 package org.example.consul;
 
-import lombok.Data;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 
-@Data
-public class Key {
-    private final String name;
+public record Key(String name) {
+    public Key removePrefix(Key key) {
+        if (key.isDirectory() && name.startsWith(key.name)) {
+            return new Key(name.substring(key.name.length()));
+        }
+        return this;
+    }
 
     public Path getDirectory() {
         if (isDirectory()) {
@@ -26,7 +28,8 @@ public class Key {
         return file.isDirectory() || name.endsWith("/");
     }
 
-    public boolean isFile() {
+    public boolean isProperty() {
         return !isDirectory();
     }
+
 }

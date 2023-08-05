@@ -2,10 +2,7 @@ package org.example.consul;
 
 
 import com.google.gson.annotations.SerializedName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
@@ -14,7 +11,8 @@ import java.util.Base64;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class KVValue {
+@With
+public class KValue {
     @SerializedName("CreateIndex")
     private Integer index;
     @SerializedName("ModifyIndex")
@@ -29,12 +27,20 @@ class KVValue {
     private String value;
 
     public String getValueAsString() {
+        if (value == null) {
+            return null;
+        }
         try {
-            var dec= Base64.getDecoder();
-            var strdec=dec.decode(value);
-            return new String(strdec,"UTF-8");
+            var dec = Base64.getDecoder();
+            var strdec = dec.decode(value);
+            return new String(strdec, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    public boolean hasValue() {
+        return value != null;
     }
 }

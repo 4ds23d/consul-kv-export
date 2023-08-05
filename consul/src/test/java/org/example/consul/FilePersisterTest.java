@@ -2,10 +2,7 @@ package org.example.consul;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import org.example.consul.ConsulApiConfiguration;
-import org.example.consul.ConsulClient;
-import org.example.consul.FilePersister;
-import org.example.consul.KVValue;
+import org.example.consul.persist.FilePersist;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -15,7 +12,6 @@ import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest
 class FilePersisterTest {
@@ -24,7 +20,7 @@ class FilePersisterTest {
     void createFilesAndDirectories(@TempDir Path tempDir, WireMockRuntimeInfo wmRuntimeInfo) throws IOException {
         // given
         var list = kvValueList(wmRuntimeInfo);
-        var persister = new FilePersister(tempDir, list);
+        var persister = new FilePersist(tempDir, list);
 
         // when
         persister.persist();
@@ -34,14 +30,14 @@ class FilePersisterTest {
         assertThat(Path.of(tempDir.toString(), "dev", "project-a", "database.key")).exists().hasContent("jdbc:oracle");
     }
 
-    private List<KVValue> kvValueList(WireMockRuntimeInfo wmRuntimeInfo) {
+    private List<KValue> kvValueList(WireMockRuntimeInfo wmRuntimeInfo) {
         aStubConsul();
         var client = aClient(wmRuntimeInfo);
         return client.findRecursive("dev/project-a");
     }
 
     private ConsulClient aClient(WireMockRuntimeInfo wmRuntimeInfo) {
-        var config = new ConsulApiConfiguration();
+        var config = new ConsulConfiguration();
         return config.build(wmRuntimeInfo.getHttpBaseUrl());
     }
 

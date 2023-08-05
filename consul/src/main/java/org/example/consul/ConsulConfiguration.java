@@ -8,7 +8,7 @@ import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
 
-public class ConsulApiConfiguration {
+public class ConsulConfiguration {
     public ConsulClient build(String url) {
         var gson = new GsonBuilder()
                 .registerTypeAdapter(Key.class, new KeyDeserializer())
